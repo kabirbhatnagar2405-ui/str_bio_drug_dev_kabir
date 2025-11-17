@@ -73,6 +73,12 @@ In terminal:
 vina --ligand ligand2.pdbqt --config grid.txt --out run1.pdbqt
 Open mogltools->Analyze->Dockings->Open Autodock Vina result
 Analyze->Macromolecules->model.pdbqt->MS
+vina --ligand ligand1.pdbqt --config grid.txt --out run2.pdbqt
+
+--------------make a config file first (grid.txt), which contains the grid parameters
+vina --ligand ligand.pdbqt --config grid.txt --out run1.pdbqt (bcz mgltools prefer pdbqt for autodock vina results)
+u will get the output, open mgltools >> analyze >> dockings>>autodock vina results >> browse and select the run1.pdbqt >> open the protein too >> macromolecules
+-------------------------------------------
 
 In Pymol
 Green: model.pdb
