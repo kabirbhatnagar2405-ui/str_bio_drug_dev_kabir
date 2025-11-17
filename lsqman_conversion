@@ -49,16 +49,20 @@ alter all, alt = ''
 #Open LSQMAN -->> ./lx_lsqman
 
 #Read models
-re m1 1n8k.pdb
-re m2 1n8k.pdb
-re m2 1ye3.pdb
+re m1 1n8k.pdb (starting structure)
+re m2 1ye3.pdb (modified structure)
 
 at all (at ma, at ca)
 
 #ex = extract selection
-#For m1: select residues A1–400 (chain A, residues 1 to 400).
-#For m2: select residue A1 (chain A, residue 1).
-ex m1 A1-400 m2 A1
+#For m1: select residues A1–400 (chain A, residues 1 to 400). Whatever is moving 
+#For m2: select residue A1 (chain A, residue 1). Whatever i have to fix
+ex 
+m2
+A1-999
+m1
+A1
+
 
 #ap = apply LSQ fit
 #Performs a least-squares superposition of the selected atoms from model m2 onto model m1.
