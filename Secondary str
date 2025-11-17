@@ -1,0 +1,23 @@
+Secondary Structure Prediction by Chou-Fasman, GOR and Neural Network 
+http://cib.cf.ocha.ac.jp/bitool/MIX/
+
+>query human fungi
+MEPKARSKGVDKGEDNYGNDYSSLEDMWKMELGADGKTVKEDRKVVGSKDEWYKRGNEYWNNVPRDASGMLQGWTQVCEPDIKCSFAFLSKLIKEGKLKPGKALDCGGGVGRVSKELLTKFFDIVDIVDQAPNLIEKAKTSIGSPRMRNFFVSGLQDFAFAEKYDCIWIQWVLMNLTDDDMVKFLARCKESLAPGGLICAKENEKAVGFIVDKEDYSITRSKAMHMKIFEAAGLKIVDSVEQPEFPPELIPVMLYALQ
+
+Secondary Structure Prediction by Jpred 4
+https://www.compbio.dundee.ac.uk/jpred/
+
+
+Secondary Structure Prediction by Discovery Studio
+
+File->New->Protein Sequence Window->Paste the Query sequence
+
+Sequence->Secondary Structure->Predict
+
+
+Another method can be opening a pdb file:
+File->open->choose the pdb file
+Sequence->show sequence
+Sequence->Secondary Structure->Predict
+
+
