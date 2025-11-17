@@ -1,0 +1,84 @@
+8. Identify the possible ligand binding sites in the given molecule. Show snapshots depicting
+the binding sites and​
+List 6 residues from the diametrically opposite ends (along the 3 axes) of any one of the
+prominent binding sites.​
+Depict them as ball-and-sticks on the protein's cartoon representation (2)
+In Discovery Studio
+File->open->model.pdb->chemistry->add hydrogens->receptor-ligand interactions->define and
+edit binding sites->define sites->from receptor cavities
+Different binding sites can be seen by moving the arrows
+
+U can use prankweb to do the same.
+
+9. Using AUTODOCK, find the docking pose of LIGAND1using blind docking method (5).
+Report their estimated binding energy and/or predicted IC50 values.(1)
+Opened chimera -> tools->structure editing->build
+structure->smiles->Cc1cnccc1c2cc(cc3NNCc23)C([F])([F])[F]
+file->save as pdb->ligand1.pdb
+AutoGrid
+file->Read Molecule->model.pdb
+Edit->Delete Water
+Edit->Hydrogens->Add->All Hydrogens
+Select R
+Select Coloring Scheme->By secondary structure->select carbon only->select secondarysturcture
+in representations->close
+Grid->Macromolecules->choose->select protein->click on select molecule->write file
+name(model.pdbqt)->save
+Ligand->Input->open->ligand1.pdb->open
+Ligand->Output->Save as PDBQT->write file name(ligand1.pdbqt)->save
+Grid->Set Map Types->Choose Ligand->Select ligand
+Grid->Grid Box->Spacing->1.000 angstrom
+Grid Options->File->Close saving current
+Grid->Output->Save GFP->ligand1.gfp->save
+Run->Run AutoGrid->set the following parameters->Launch
+Open log_autogrid.glg->check in the end for “autogrid4: Successfu
+
+(B) AutoDock
+Docking->macromolcules->Set Rigid file name->model.pdbqt->open
+Docking->Ligand->Select Ligand->Accept
+Docking->Search Parameters->Genetic Algorithm->Accept
+Docking->Docking parameters->accept
+Docking->Output->LamarckianGA(4.2)->ligand1.dpf->save
+Run->Run AutoDock->Enter log file name->log_autodock.dlg->Launch
+Open->tail log_autodock.dlg->shows “autodock4: Successful Completion on
+"IBAB-MSc14-Comp007.ibab.ac.in"”
+Open mgtools->Analyze->Docking->log_autodock.dlg
+analyze->macromolecules->open
+Analyze->Conformations ->Play, ranked by energy
+Click on the & symbol->write complex ->save as complex.pdbqt
+Convert pdbqt to PDB
+obabel -ipdbqt complex.pdbqt -opdb -O pose1.pdb
+Add TER at the end of protein chain
+open in chimera
+
+10. Using the binding site from the above, dock the second LIGAND2 using
+AUTODOCK-VINA (4)
+Grid box generated for the best docking site. Now we will do autodock vina with ligand2
+no of points in x dimension : 16
+no of points in y dimension : 18
+no of points in z dimension : 20
+x-center : 35.004
+y-center : 20.0
+z-center : 21.815
+Write this in grid.txt
+receptor=model.pdb
+center_x=35.004
+center_y=20.0
+center_z=21.815
+size_x=16
+size_y=18
+size_z=20
+Saved smiles2.txt as ligand2.pdb in chimera
+In terminal:
+vina --ligand ligand2.pdbqt --config grid.txt --out run1.pdbqt
+Open mogltools->Analyze->Dockings->Open Autodock Vina result
+Analyze->Macromolecules->model.pdbqt->MS
+
+In Pymol
+Green: model.pdb
+Cyan: pose_ligand1.pdb
+Magenta: pose_ligand2.pdb
+
+11. Using 2D interaction diagrams, depict the differences in the interactions of the best pose
+of these two ligands. (4)
+Load model.pdb and then pose1.pdb
