@@ -1,0 +1,241 @@
+QUERY 1
+#saved the query sequence as query.fasta
+>query human fungi
+MEPKARSKGVDKGEDNYGNDYSSLEDMWKMELGADGKTVKEDRKVVGSKDEWYKRGNEYWNNVPRDASGMLQGWTQVCEPDIKCSFAFLSKLIKEGKLKPGKALDCGGGVGRVSKELLTKFFDIVDIVDQAPNLIEKAKTSIGSPRMRNFFVSGLQDFAFAEKYDCIWIQWVLMNLTDDDMVKFLARCKESLAPGGLICAKENEKAVGFIVDKEDYSITRSKAMHMKIFEAAGLKIVDSVEQPEFPPELIPVMLYALQ
+#perform blastp of the query sequence
+choose database->PDB
+
+Result:
+Choose->Chain A, LMAJ004091AAA [Leishmania major strain Friedlin]->1XTP_A
+
+Download 1XTP_A from PDB
+Download files->Legacy pdb format
+
+
+Cleaning the pdb:
+Remove all the HETATM for non MSE residue (HOH, SAI)
+Remove anisou : grep -vi aniso 1XTP.pdb > step1.pdb (we don't have in this pdb)
+Remove SEQRES from the pdb file
+Open Discovery studio
+
+Mutate all the MSE to MET 
+File->open->1XTP.pdb
+View->Hierarchy
+Build and Edit Protein->Mutate->Select MSE and then Mutate to MET->save as 1XTP_clean.pdb
+PDB file cleaned
+Open 1XTP_clean.pdb in chimera
+Tools->Sequence->Sequence
+File->save->1xtp_clean.afasta
+Open Emboss needle alignment->Paste both the sequence->output format : fasta->submit
+
+
+
+
+Copy the obtained result in align.pir
+
+
+Edit the .pir file 
+>P1;query 
+sequence:query::::::::
+
+>P1;1XTP_clean.pdb
+structureX:1XTP_clean.pdb:1:A:254:A::::.
+
+            Add * at the end of both the sequences
+Download the script.py and name the files in it according to your edited files.
+DOWNLOAD MODELLER 
+conda config --add channels salilab
+conda install modeller
+sudo gedit /home/ibab/miniconda3/lib/modeller-10.7/modlib/modeller/config.py
+license = 'MODELIRANJE'
+mod10.7 script.py
+Multiple .pdb(3) are generated.
+query.B99990001.pdb
+query.B99990002.pdb
+query.B99990003.pdb
+Any one of them can be used for further processing.
+Choose the file that has the lowest RMSD and then startt further processing.
+RMSD with 1XTP_clean.pdb
+query.B99990001.pdb : 0.287 angstroms
+query.B99990002.pdb : 0.364 angstroms
+query.B99990003.pdb : 0.352 angstroms
+Used query.B99990001.pdb for further processing
+
+
+query.B99990001.pdbquery.B99990002.pdb
+query.B99990003.pdb
+
+QUERY 2
+#saved the query sequence as query.fasta
+>query2 human insect
+MASPEQLELSGLIKSVHQRLRESAKHSDPETVWRKHIQDAPMLQNYAEAMHKLAT
+QYWDRTMDVTCKRSNSRIDWVAASCRTYFNGGLLNLFRDKDDKVMQAIDDAYRPT
+HQPYCVEKIKMLDVGSCYNPFAAFADFEVTAIDIAPAQPDVWYCDFLEAEVKESI
+DRPQFLPEHHAIAAFPRNHYDAIVFSLLLEYLPTPDQRLRCCSKAYELLRPEGIL
+LIITPDSRHQGANARLMKNWRYTLAGIGFTRIKIEKLEHVTCMVFRRSLFAAVGK
+RWCAIHREAYMEPVLNIPQDFNETSTSDERMDFVRTDADDDEIREAFSGLPFEDT
+VDSGFS
+#perform blastp of the query sequence
+choose database->PDB
+
+Result:
+Choose->Chain A, S-adenosylmethionine sensor upstream of mTORC1 [Drosophila melanogaster]>7VKQ_A
+
+Download 7VKQ_A from PDB
+Download files->Legacy pdb format
+
+
+Cleaning the pdb:
+Remove anisou : grep -vi aniso 7VKQ.pdb > 7VKQ-anisou.pdb
+Remove all the SEQRES from the pdf file
+Remove all other chains and keep only chain A : awk 'substr($0,22,1)=="A" && $1=="ATOM" {print $0}' 7VKQ-anisou.pdb > 7VKQ_clean.pdb
+PDB file cleaned
+Open 7VKQ_clean.pdb in chimera
+Tools->Sequence->Sequence
+File->save->7VKQ_clean.afasta
+Open Emboss needle alignment->Paste both the sequence->output format : fasta->submit
+
+Copy the obtained result in align.pir
+
+Edit the .pir file 
+>P1;query2
+sequence:query:::::::: 
+
+>P1;7VKQ_clean.pdb
+structureX:7VKQ_clean.pdb:67:A:301:A::::
+            Add * at the end of both the sequences
+(These numbers were derived from the pdb file from where it started and ended)
+
+Download the script.py and name the files in it according to your edited files.
+DOWNLOAD MODELLER 
+conda config --add channels salilab
+conda install modeller
+sudo gedit /home/ibab/miniconda3/lib/modeller-10.7/modlib/modeller/config.py
+license = 'MODELIRANJE'
+mod10.7 script.py
+Multiple .pdb(3) are generated.
+query2.B99990001.pdb
+query2.B99990002.pdb
+query2.B99990003.pdb
+Any one of them can be used for further processing.
+Choose the file that has the lowest RMSD and then start further processing.
+RMSD with 7VKQ_clean.pdb
+query2.B99990001.pdb : 0.395 angstroms
+query2.B99990002.pdb : 0.335 angstroms
+query2.B99990003.pdb : 0.349 angstroms
+Used query2.B99990002.pdb for further processing
+
+The obtained pdb has long tails that need to be chopped for the energy minimization to work properly
+Open query2.B99990002.pdb in pymol->select the residues to cut->select the sequence to keep->rename the selection query2-tail
+File->Export Molecule->Choose query2-tail->save->query2-tail.fasta
+
+
+ENERGY MINIMIZATION BY GROMACS
+
+ gmx pdb2gmx -f query2-tail.pdb -water spc -ignh -o query2.gro -p query2.top
+ we choose force field 6
+gmx editconf -f query2.gro -bt cubic -d 1.0 -o box.gro
+gmx solvate -cp box.gro -cs spc216.gro -p query2.top -o query2.gro
+gmx grompp -f em.mdp -p query2.top -c query2.gro -o ion.tpr
+gmx genion -s ion.tpr -neutral -conc 0.15 -o ion.gro -p query2.top
+choose group 13
+gmx grompp -f em.mdp -p query2.top -c ion.gro -o em-steep.tpr
+gmx mdrun -v -deffnm em-steep 
+
+change steep to "cg" in em.mdp
+
+gmx grompp -f em.mdp -c em-steep.gro -p query2.top -o em-cg.tpr
+gmx mdrun -v -deffnm em-cg
+OUTPUT: em-cg.gro
+
+MD SIMULATION
+
+For nvt.mdp
+open nvt.mdp->change the following parameters:
+title = Amber query2 NVT equilibration
+nsteps = 50000
+rcoulomb = 1.0  #for big proteins these values should be chnaged back to 1.0
+rvdw = 1.0
+continuation = no
+gen_vel = yes
+gmx grompp -f nvt.mdp -p query2.top -c em-cg.gro -o nvt.tpr -r em-cg.gro 
+gmx mdrun -v -deffnm nvt
+
+For npt.mdp
+open npt.mdp->change the following parameters:
+title = Amber query2 NPT equilibration
+nsteps = 50000
+rcoulomb = 1.0  
+rvdw = 1.0
+continuation = yes
+gen_vel = no
+gmx grompp -f npt.mdp -p query2.top -c nvt.gro -o npt.tpr -r nvt.gro
+gmx mdrun -v -deffnm npt
+
+For md.mdp
+open md.mdp->change the following parameters:
+title = Amber query2 NPT equilibration
+nsteps = 500000
+rcoulomb = 1.0  
+rvdw = 1.0
+continuation = yes
+gen_vel = no
+
+gmx grompp -f md.mdp -p query2.top -c nvt.gro -o md.tpr -r nvt.gro
+gmx mdrun -v -deffnm md
+
+RMSD
+
+gmx rms -s md.tpr -f md.xtc -o rmsd.xvg 
+Choose 4 (Backbone) or 2 (Protein-H)
+Choose 4 (Backbone) or 2 (Protein-H) 
+xmgrace rmsd.xvg
+
+
+
+
+FLUCTUATION IN RESIDUE
+
+gmx rmsf -s md.tpr -f md.xtc -o rmsf.xvg -oq bfac.pdb 
+Choose 1
+xmgrace rmsf.xvg
+
+gmx rmsf -s md.tpr -f md.xtc -o rmsf.xvg -oq bfac.pdb -res (gives residue wise)
+choose 1
+xmgrace rmsf.xvg
+
+open bfac.pdb in pymol
+colour->spectrum->b-factors
+blue to red (blue->least fluctuating, red->maximum fluctuating)
+
+
+RADIUS OF GYRATION
+gmx gyrate -f md.xtc -s md.tpr -o gyrate.xvg
+choose 1
+xmgrace gyrate.xvg
+
+
+FIND THE HYDROGEN BONDS	
+gmx make_ndx -h (to create index)
+gmx make_ndx -f nvt.gro -o res6-res7.ndx
+ENTER: r 6
+ENTER: r 7
+ENTER: q
+gmx hbond -f md.xtc -num hbond.xvg -s md.tpr -n res6-res7.ndx
+select the group->first choose 18(r_6)->second choose 17(r_7)
+xmgrace hbond.xvg 
+
+DISTANCE BETWEEN TWO ATOMS
+gmx make_ndx -f nvt.gro -o dist.ndx
+ENTER: r 1 & a CA
+ENTER: r 8 & a CA
+ENTER: 17 | 18 (COMBINING THE TWO ATOMS, THAT WERE CREATED ABOVE, index for r1 was 17 and r2 was 18)
+ENTER: q
+gmx distance -f md.xtc -s md.tpr -n dist.ndx -oall distance.xvg
+CHOOSE THE INDEX THAT YOU CREATED FOR 2 ATOMS->choose the index number(19)->cntrl D
+xmgrace distance.xvg
+gmx trjconv -f md.xtc -s md.tpr -o md-fix.xtc -pbc mol (to fix error)
+Choose 0
+
+
+
