@@ -148,6 +148,49 @@ gmx grompp -f em.mdp -c em-steep.gro -p query2.top -o em-cg.tpr
 gmx mdrun -v -deffnm em-cg
 OUTPUT: em-cg.gro
 
+gmx energy -f em-steep.edr
+choose-->> 7 (or any of it that u want)
+creates a file energy.xvg
+sudo apt install grace
+xmgrace energy.xvg --->>plots graphs
+
+gmx energy -f em-cg.edr
+xmgrace energy.xvg (renamed it to bond_cg_energy.xvg)
+
+
+------------To plot two parameters on a single graph---------------------
+open xmgrace
+Data -> Import -> ASCII -> section Load as(NXY) -> in the filter section (replace *.dat with *.xvg) -> choose the files to be plotted -> ok
+-------------------------------------------------------------------------
+
+
+gmx trjconv -f em-cg.gro -pbc mol -o em-cg-mol.pdb -s em-cg.tpr
+->> choose 1 
+chimera em-cg-mol.pdb
+file -> open -> choose structure (distorted.pdb)
+tools -> Structure Comparison -> Matchmaker -> choose refernce and structure to match -> ok
+
+now open the .pdb file and plot a ramachandran plot (discovery studio, procheck, saves server)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 MD SIMULATION
 
 For nvt.mdp
