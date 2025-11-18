@@ -65,6 +65,8 @@ show ball_and_stick, extremeslabel n. CA and extremes, "%s %s" % (resn, resi)
 Save Snapshot:
 zoom extremes, 12
 png snapshot_2_extreme_residues.png
+
+The optimized way to find the binding sites
 ------------------------------------------------------------
 Method 1 — Annotated Binding Site (PDB SITE Record)
 ----------------------------------------------------
