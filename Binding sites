@@ -1,0 +1,85 @@
+Binding Site Analysis of 1B6A using PyMOL
+=========================================
+A Complete, Annotated, and Reproducible Workflow
+This document describes how to:
+- Load and visualize the protein–ligand complex (PDB ID 1B6A) in PyMOL
+- Select ligands and annotated binding site residues
+- Generate two publication-quality snapshots
+- Identify the six extreme (opposite) residues based on coordinate extrema
+- Compute binding site residues using two independent methods (annotated + computational)
+------------------------------------------------------------
+Step 1 — Load the Molecule in PyMOL
+-----------------------------------
+GUI Method:
+1. Open PyMOL
+2. Go to: File → Open…
+3. Select 1B6A.pdb
+Command:
+load 1B6A.pdb
+------------------------------------------------------------
+Step 2 — Select Ligands and Binding Site
+----------------------------------------Select Ligands (TN4 + CO):
+select main_ligands, resn TN4 or resn CO
+Select Binding Site (from SITE record):
+select site_ac3, resi 231+327+328+329+331+338+339+364+444
+------------------------------------------------------------
+Step 3 — Snapshot 1: Full Binding Site Visualization
+----------------------------------------------------
+Prepare Scene:
+bg_color white
+hide all
+show cartoon
+Show Ligands and Binding Site:
+show sticks, main_ligands
+color byelement, main_ligands
+show sticks, site_ac3
+Save Snapshot:
+zoom site_ac3, 8
+png snapshot_1_full_site.png
+------------------------------------------------------------
+Step 4 — Six Extreme Residues (Coordinate Extremes)
+----------------------------------------------------
+X-Axis:- Min: HIS 331
+- Max: HIS 231
+Y-Axis:
+- Min: GLU 364
+- Max: TYR 444
+Z-Axis:
+- Min: ILE 338
+- Max: ASN 327
+Final 6 extreme residues:
+- HIS 231
+- HIS 331
+- GLU 364
+- TYR 444
+- ILE 338
+- ASN 327
+------------------------------------------------------------
+Step 5 — Snapshot 2: Extreme Residue Visualization
+---------------------------------------------------
+Selection:
+select extremes, resi 231+331+364+444+338+327
+Visualization:
+hide sticks, site_ac3
+show ball_and_stick, extremeslabel n. CA and extremes, "%s %s" % (resn, resi)
+Save Snapshot:
+zoom extremes, 12
+png snapshot_2_extreme_residues.png
+------------------------------------------------------------
+Method 1 — Annotated Binding Site (PDB SITE Record)
+----------------------------------------------------
+SITE entries in 1B6A define residues:
+HIS 231, ASN 327, LEU 328, ASN 329,
+HIS 331, ILE 338, HIS 339, GLU 364, TYR 444
+------------------------------------------------------------
+Method 2 — Computational Binding Site (Distance Method)
+--------------------------------------------------------
+Identify Ligand:
+select ligand, organic
+Compute Binding Site:
+select binding_site, byres polymer within 5 of ligand
+Visualization:
+hide sticks, all
+show cartoon
+show sticks, binding_site
+show sticks, ligandzoom binding_site, 8
