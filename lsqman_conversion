@@ -5,6 +5,11 @@ obabel -ismi Retinol.smi -OPDB --gen3d > Retinol.pdb
 obabel -ismi Retinol.smi -opdbqt --gen3d -p gasteiger -o Retinol.pdbqt
 obabel -ismi Retinol.smi -opdbqt --gen3d --partialcharge gasteiger -O Retinol.pdbqt
 
+#PNG to SMILES
+osra -f smiles input.png > output.smi
+#SMILES to PNG
+obabel molecule.smi -O molecule.png -d
+
 ---------------Explanation-------------------------------
 -ismi Retinol.smi → input is a SMILES file.
 -opdbqt → output format is PDBQT.
